@@ -1,7 +1,7 @@
 import os
 
 import omegaconf
-from omegaconf import OmegaConf
+from omegaconf import OmegaConf, ListConfig
 from solo.methods.base import BaseMethod
 from solo.utils.auto_resumer import AutoResumer
 from solo.utils.checkpointer import Checkpointer
@@ -165,7 +165,7 @@ def parse_cfg(cfg: omegaconf.DictConfig):
 
     # adjust lr according to batch size
     cfg.num_nodes = omegaconf_select(cfg, "num_nodes", 1)
-    n_devices = len(cfg.devices) if isinstance(cfg.devices, list) else cfg.devices
+    n_devices = len(cfg.devices) if isinstance(cfg.devices, (list, ListConfig)) else cfg.devices
     scale_factor = cfg.optimizer.batch_size * n_devices * cfg.num_nodes / 256
     cfg.optimizer.lr = cfg.optimizer.lr * scale_factor
 
